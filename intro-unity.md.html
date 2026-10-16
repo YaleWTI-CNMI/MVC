@@ -130,6 +130,18 @@ A real-time engine and editor for **2D and 3D** applications.
 Games and industrial applications
 </div>
 
+# Unity + BrainWorks
+
+<div class="cols">
+![CAVE on 1st floor](imgs/cave.png)
+
+![Erica Busch's fMRI/BCI project](imgs/Brain_Embed.mp4)
+</div>
+
+<div class="notes">
+Just some BrainWorks (adjacent) things that use Unity
+</div>
+
 # Why Unity over the other options?
 
  - Support over a wide variety of platforms
@@ -158,7 +170,8 @@ and gain a better understanding of the Unity development workflow.
 
 # Game: (part of) Roll-A-Ball!
 
-![](imgs/09-result.png)
+![Original: https://learn.unity.com/course/roll-a-ball/tutorial/setting-up-the-game?version=6.3
+](imgs/09-result.png)
 
 <div class="notes">
 https://learn.unity.com/course/roll-a-ball/tutorial/setting-up-the-game?version=6.3
@@ -169,6 +182,10 @@ https://learn.unity.com/course/roll-a-ball/tutorial/setting-up-the-game?version=
 ![](imgs/new-proj.png)
 
 # ⌛
+
+<div class="notes">
+Loading...
+</div>
 
 # A Blank Canvas, Full of Potential
 
@@ -300,6 +317,10 @@ public class PlayerController : MonoBehaviour
     }
 ```
 
+<div class="notes">
+The input system maps key presses to different movement values
+</div>
+
 # Step 6: Motion (Physics)
 
 ```csharp
@@ -354,6 +375,8 @@ Remove a rigid body from one of the instances. What happens?
 
 # Step 9: More code
 
+Let's change the color when the domino falls.
+
 ```csharp
 public class Knockable : MonoBehaviour
 {
@@ -372,6 +395,7 @@ public class Knockable : MonoBehaviour
 
 # Step 9: More more code
 
+Every frame, check if the domino has fallen. If so, change color.
 ```csharp
     ...
     void Update()
@@ -425,7 +449,13 @@ public class Endgame : MonoBehaviour
 }
 ```
 
+<div class="notes">
+Let's have a way to finish the game
+</div>
+
 # Step 10: Shut it down
+
+Note the different ways to handle application exit in the editor vs built application.
 
 ```csharp
     void Shutdown()
@@ -449,16 +479,19 @@ public class Endgame : MonoBehaviour
 | GameObject | An entity that does nothing by itself      |
 | Component  | Data and behavior attached to a GameObject |
 | Prefab     | A reusable GameObject template             |
-| Asset      | Any imported file: mesh, texture, audio    |
+| Script     | Dynamically control game state             |
 
 # Some things we could cover quickly, given time
 
  - Build/deploy
  - Other Editor controls (scaling)
  - `Debug.Log` and friends
+ - Stats view
 
 # Some of the things we missed, but that may be important
 
+ - Assets (sounds, pictures, external models, packaging, ...)
+ - Version control
  - URP/HDRP/BiRP (default to URP)
  - Mono vs IL2CPP (soon to be CoreCLR vs IL2CPP?)
  - "New Input" vs "Old Input", input mapping
@@ -466,7 +499,17 @@ public class Endgame : MonoBehaviour
  - Camera controls
  - Animations
  - Sounds
- - Assets (sounds, pictures, external models, ...)
+ - UIs
+ - Multiple scenes
+ - DOTS/ECS
+ - Really important things
+
+ # Why not use Unity/awkward parts
+
+  - Proprietary-- could disappear at some point (see e.g. Our Machinery)
+  - Big & slow to install/launch
+  - Too many ways to solve a problem/lots of legacy stuff (for now)
+  - Documentation can easily be out of date
 
 </script>
 
