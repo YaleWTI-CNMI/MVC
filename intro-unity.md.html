@@ -106,6 +106,12 @@ body .md .notes { display: none; }
 body .markdeepFooter, body #mdContextMenu { display: none !important; }
 </style>
 
+<!-- The preformatted script keeps the browser from parsing the Markdown as HTML first,
+     which would lowercase C# generics such as GetComponent<Rigidbody>() into tags.
+     The explicit <body> is needed because a <script> right after <style> stays in <head>,
+     and Markdeep only reads the body. -->
+<body>
+<script type="preformatted">
 # Intro to Unity
 
 <!-- <div class="deck-subtitle">Scenes, GameObjects, and your first script</div> -->
@@ -124,6 +130,13 @@ A real-time engine and editor for **2D and 3D** applications.
 Games and industrial applications
 </div>
 
+# Why Unity over the other options?
+
+ - Support over a wide variety of platforms
+ - Great support for both 2D & 3D
+ - Many learning resources (tutorials, example projects)
+ - Asset store
+
 # How do you develop Unity projects?
 
 ![](imgs/editor-demo.png)
@@ -138,9 +151,14 @@ Many places.
 Design once, build anywhere (sort of)
 </div>
 
+# Goal
+
+The goal is to become more comfortable with the Unity Editor interface,
+and gain a better understanding of the Unity development workflow.
+
 # Game: (part of) Roll-A-Ball!
 
-Screenshot here
+![](imgs/09-result.png)
 
 <div class="notes">
 https://learn.unity.com/course/roll-a-ball/tutorial/setting-up-the-game?version=6.3
@@ -152,7 +170,7 @@ https://learn.unity.com/course/roll-a-ball/tutorial/setting-up-the-game?version=
 
 # ⌛
 
-# A Beautiful Canvas
+# A Blank Canvas, Full of Potential
 
 ![](imgs/empty-editor.png)
 
@@ -296,6 +314,10 @@ public class PlayerController : MonoBehaviour
 
 Use WASD or arrow keys to control the ball.
 
+<div class="notes">
+Note the editor controls for speed
+</div>
+
 # Step 7: Walls and prefabs
 
 <div class="cols">
@@ -308,9 +330,116 @@ Use WASD or arrow keys to control the ball.
 
 </div>
 
+<div class="notes">
+talk about how you can edit all instantiations of a prefab at once
+</div>
+
 # Step 8: Dominoes
 
+<div class="cols">
+
  - Make a prefab to knock over
+ - Needs a RigidBody component
+ - Put a few in the scene
+
+![](imgs/08-domino.png)
+</div>
+
+# Step 8: Dominoes
+![Press Play, and see if they fall.](imgs/08-field.png)
+
+<div class="notes">
+Remove a rigid body from one of the instances. What happens?
+</div>
+
+# Step 9: More code
+
+```csharp
+public class Knockable : MonoBehaviour
+{
+    Material mat;
+    Color _originalColor;
+    Color _newColor;
+
+    void Start()
+    {
+        mat = GetComponent<Renderer>().material;
+        _originalColor = mat.GetColor("_BaseColor");
+        _newColor = new Color(0.2f, 0.95f, 0.1f);
+    }
+    ...
+```
+
+# Step 9: More more code
+
+```csharp
+    ...
+    void Update()
+    {
+        if (IsStandingUp())
+        {
+            mat.SetColor("_BaseColor", _originalColor);
+        }
+        else
+        {
+            mat.SetColor("_BaseColor", _newColor);
+        }
+    }
+
+    public bool IsStandingUp()
+    {
+        return !(Vector3.Dot(this.transform.up, Vector3.up) < 0.8f);
+    }
+}
+```
+
+# Step 9: The result
+
+![](imgs/09-result.png)
+
+# Step 10: The endgame
+
+```csharp
+public class Endgame : MonoBehaviour
+{
+    public GameObject floor;
+
+    void Update()
+    {
+        bool done = true;
+        foreach (Transform child in transform)
+        {
+            Knockable domino = child.gameObject.GetComponent<Knockable>();
+            if (domino != null && domino.IsStandingUp())
+            {
+                done = false;
+            }
+        }
+
+        if (done)
+        {
+            floor.transform.localScale = Vector3.zero;
+            Invoke(nameof(Shutdown), 3.0f);
+        }
+    }
+}
+```
+
+# Step 10: Shut it down
+
+```csharp
+    void Shutdown()
+    {
+#if UNITY_EDITOR
+        UnityEditor.EditorApplication.isPlaying = false;
+#endif
+        Application.Quit();
+    }
+```
+
+# Step 11: The finale
+
+![Beautiful.](imgs/11-finale.png)
 
 # Review: Core concepts
 
@@ -322,6 +451,24 @@ Use WASD or arrow keys to control the ball.
 | Prefab     | A reusable GameObject template             |
 | Asset      | Any imported file: mesh, texture, audio    |
 
+# Some things we could cover quickly, given time
+
+ - Build/deploy
+ - Other Editor controls (scaling)
+ - `Debug.Log` and friends
+
+# Some of the things we missed, but that may be important
+
+ - URP/HDRP/BiRP (default to URP)
+ - Mono vs IL2CPP (soon to be CoreCLR vs IL2CPP?)
+ - "New Input" vs "Old Input", input mapping
+ - Profiling tools
+ - Camera controls
+ - Animations
+ - Sounds
+ - Assets (sounds, pictures, external models, ...)
+
+</script>
 
 <script src="https://casual-effects.com/markdeep/latest/markdeep.min.js" charset="utf-8"></script>
 <script>
