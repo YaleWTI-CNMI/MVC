@@ -1,0 +1,636 @@
+<meta charset="utf-8">
+<!-- Slide deck. Each level-1 heading starts a new slide.
+     Keys: arrows, Space, PageUp/PageDown, Home/End. Click also advances.
+     Presenter notes: put <div class="notes">...</div> in a slide; press P for the presenter window. -->
+<script>
+window.markdeepOptions = { tocStyle: 'none', detectMath: false };
+</script>
+<style>
+/* Kept in <head> so Markdeep does not parse CSS as Markdown.
+   Selectors start with "body" to outrank the stylesheet Markdeep injects later. */
+:root {
+  --hl: #9000e0;
+  --ink: #1a1a1a;
+  --muted: #666;
+  --rule: #ddd;
+  --code-bg: #f5f5f5;
+}
+html, body {
+  background: #fff !important; margin: 0 !important; padding: 0 !important;
+  overflow: hidden; height: 100%;
+}
+/* Fixed 1280x720 stage, scaled to the window, so layout does not depend on screen size. */
+body .md {
+  position: fixed; left: 50%; top: 50%;
+  width: 1280px; height: 720px; max-width: none !important;
+  margin: 0 !important; padding: 0 !important;
+  transform: translate(-50%, -50%) scale(var(--scale, 1));
+  font-family: system-ui, "Segoe UI", Helvetica, Arial, sans-serif;
+  font-size: 28px; line-height: 1.4; color: var(--ink);
+}
+body .md section.h1-section {
+  display: none; position: absolute; inset: 0; box-sizing: border-box;
+  padding: 56px 80px 72px;
+}
+body .md section.h1-section.active { display: block; }
+body .md a.target { display: none; }
+body .md p { margin: 0 0 .6em; }
+
+body .md h1 {
+  font-family: inherit; font-size: 46px; font-weight: 700; line-height: 1.15;
+  color: var(--hl); text-align: left;
+  margin: 0 0 32px; padding: 0 0 10px; border: 0; border-bottom: 2px solid var(--hl);
+}
+/* Markdeep numbers h1 headings by default. */
+body .md h1::before { content: none; }
+body .md strong, body .md b { color: var(--hl); }
+body .md a { color: var(--hl); }
+
+body .md ul, body .md ol { margin: 0; padding-left: 1.2em; }
+body .md li { margin: 0 0 14px; padding-left: .2em; }
+body .md li::marker { color: var(--hl); font-weight: 700; }
+
+body .md code {
+  font-family: Consolas, Menlo, monospace; font-size: .9em;
+  background: var(--code-bg); padding: 0 .25em;
+}
+body .md pre.listing {
+  box-sizing: border-box; resize: none; overflow: hidden;
+  background: var(--code-bg) !important; border: 0; border-left: 4px solid var(--hl);
+  padding: 20px 24px; margin: 0; font-size: 21px; line-height: 1.45;
+}
+body .md pre.listing code { background: none; padding: 0; font-size: 1em; color: var(--ink); }
+body .md .hljs-keyword, body .md .hljs-built_in { color: var(--hl); }
+body .md .hljs-comment { color: var(--muted); font-style: normal; }
+body .md .hljs-title, body .md .hljs-type, body .md .hljs-class,
+body .md .hljs-string, body .md .hljs-number, body .md .hljs-literal,
+body .md .hljs-meta, body .md .hljs-attribute { color: var(--ink); }
+
+/* "table.table" and ":nth-child(n)" match the weight of Markdeep's own table selectors. */
+body .md div.table { margin: 0; text-align: left; }
+body .md table.table { border-collapse: collapse; width: 100%; font-size: 24px; margin: 0; }
+body .md table.table tr:nth-child(n) { background: none; }
+body .md table.table th {
+  background: none; color: var(--ink); text-align: left; font-weight: 700;
+  border: 0; border-bottom: 2px solid var(--hl); padding: 6px 16px;
+}
+body .md table.table td { border: 0; border-bottom: 1px solid var(--rule); padding: 8px 16px; }
+
+body .md svg.diagram {
+  display: block; margin: 0 auto 24px !important; width: 760px; height: auto;
+  stroke: var(--ink); stroke-width: 2px; fill: var(--ink);
+}
+/* Markdeep places one glyph per 8px grid cell (in viewBox units), so the font must be
+   monospace and sized to the grid, not inherited from the 28px slide text. */
+body .md svg.diagram text {
+  fill: var(--ink); stroke: none; font-family: Consolas, Menlo, monospace; font-size: 13px;
+}
+body .md p.note { color: var(--muted); font-size: 24px; text-align: center; }
+
+body .md section.title { padding-top: 220px; }
+body .md section.title h1 { font-size: 64px; border-bottom: 0; padding-bottom: 0; }
+body .md section.title .deck-subtitle { font-size: 32px; }
+body .md section.title .deck-byline { margin-top: 40px; font-size: 24px; color: var(--muted); }
+
+body .md .slide-count {
+  position: absolute; right: 80px; bottom: 28px; font-size: 18px; color: var(--muted);
+}
+/* Columns: each direct child of .cols is one equal-width column. A Markdeep image is
+   already its own block; wrap other content in a <div> per column. */
+body .md .cols { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; gap: 40px; align-items: start; }
+body .md .cols > * { min-width: 0; }
+body .md img.markdeep { display: block; width: 100%; max-height: 460px; object-fit: contain; }
+body .md .imagecaption { display: block; margin: 10px 0 0; font-style: normal; font-size: 20px; color: var(--muted); text-align: center; }
+
+body .md .notes { display: none; }
+body .markdeepFooter, body #mdContextMenu { display: none !important; }
+</style>
+
+<!-- The preformatted script keeps the browser from parsing the Markdown as HTML first,
+     which would lowercase C# generics such as GetComponent<Rigidbody>() into tags.
+     The explicit <body> is needed because a <script> right after <style> stays in <head>,
+     and Markdeep only reads the body. -->
+<body>
+<script type="preformatted">
+# Intro to Unity
+
+<!-- <div class="deck-subtitle">Scenes, GameObjects, and your first script</div> -->
+<div class="deck-byline">Alex Forrence, Oct 16 2026</div>
+
+
+# First Steps
+
+Because all good things take time...
+
+![](imgs/new-proj.png)
+
+# What is Unity?
+
+A real-time engine and editor for **2D and 3D** applications.
+<div class="cols">
+![Time Ghost, a Unity real-time demo](imgs/time-ghost.png)
+
+![Heart-surgery-planning app, Cincinnati Children's Hospital](imgs/cincinnati-heart.png)
+</div>
+
+<div class="notes">
+Games and industrial applications
+</div>
+
+# Unity + BrainWorks
+
+<div class="cols">
+![CAVE on 1st floor](imgs/cave.png)
+
+![Erica Busch's fMRI/BCI project](imgs/Brain_Embed.mp4)
+</div>
+
+<div class="notes">
+Just some BrainWorks (adjacent) things that use Unity
+</div>
+
+# Why Unity over the other options?
+
+ - Support over a wide variety of platforms
+ - Great support for both 2D & 3D
+ - Many learning resources (tutorials, example projects)
+ - Asset store
+
+# How do you develop Unity projects?
+
+![](imgs/editor-demo.png)
+
+# Where can Unity projects be deployed?
+
+Many places.
+
+![](imgs/multiplat.png)
+
+<div class="notes">
+Design once, build anywhere (sort of)
+</div>
+
+# Goal
+
+The goal is to become more comfortable with the Unity Editor interface,
+and gain a better understanding of the Unity development workflow.
+
+# Game: (part of) Roll-A-Ball!
+
+![Original: https://learn.unity.com/course/roll-a-ball/tutorial/setting-up-the-game?version=6.3
+](imgs/09-result.png)
+
+<div class="notes">
+https://learn.unity.com/course/roll-a-ball/tutorial/setting-up-the-game?version=6.3
+</div>
+
+# A Blank Canvas, Full of Potential
+
+![](imgs/empty-editor.png)
+
+# Step 1: A Floor
+
+<div class="cols">
+![One of many ways to make a GameObject](imgs/01-plane.png)
+
+![Scale it](imgs/01-scale.png)
+</div>
+
+# Step 1: A Floor
+
+![A Floor. Practice camera controls, focus, etc.](imgs/01-floor-view.png)
+
+# Step 2: A Ball
+
+Same steps as the floor.
+
+<div class="cols">
+![Reset is handy for returning to default transform.](imgs/02-ball-reset.png)
+
+![Set Y position to 0.5.](imgs/02-ball-settings.png)
+</div>
+
+# Step 3: Some pizzaz for this dull world
+
+<div class="cols">
+![Create▶Folder, then Create▶Material](imgs/03-matorg.png)
+
+![Change anything!](imgs/03-matset.png)
+
+![Drag it on there! Hierarchy or directly in the scene view.](imgs/03-res.png)
+</div>
+
+If you're feeling brave, jazz up the floor too.
+
+# Step 4: Press Play
+
+![Untapped potential](imgs/04-play.png)
+
+# Step 5: Camera position
+
+<div class="cols">
+![](imgs/05-camera.png)
+
+![Ctrl+Shift+F](imgs/05-repos.png)
+
+![Play Mode](imgs/05-play.png)
+</div>
+
+# Step 6: Motion
+
+<div class="cols">
+![Select the Ball GameObject, and add Rigidbody component](imgs/06-rb.png)
+
+...and add a "Player Input" component too.
+</div>
+
+# Step 6: Motion (Code!)
+
+<div class="cols">
+![](imgs/06-scriptname.png)
+
+![](imgs/06-loc.png)
+</div>
+
+# Step 6: Motion (Code!!)
+
+```csharp
+using UnityEngine;
+using UnityEngine.InputSystem;
+
+public class PlayerController : MonoBehaviour
+{
+    void Start()
+    {
+    }
+
+    void FixedUpdate()
+    {
+    }
+
+    void OnMove(InputValue movementValue)
+    {
+    }
+}
+```
+
+# Step 6: Motion (Imports)
+
+```csharp
+using UnityEngine;
+using UnityEngine.InputSystem;
+```
+
+# Step 6: Motion (Properties)
+
+```csharp
+public class PlayerController : MonoBehaviour
+{
+    public float speed = 10; // Gains editor controls
+
+    private Rigidbody rb;
+    private float movementX;
+    private float movementY;
+    ...
+```
+
+# Step 6: Motion (Init)
+
+```csharp
+  void Start()
+  {
+      rb = GetComponent<Rigidbody>();
+  }
+```
+
+# Step 6: Motion (Input)
+
+```csharp
+    void OnMove(InputValue movementValue)
+    {
+        Vector2 movementVector = movementValue.Get<Vector2>();
+        movementX = movementVector.x;
+        movementY = movementVector.y;
+    }
+```
+
+<div class="notes">
+The input system maps key presses to different movement values
+</div>
+
+# Step 6: Motion (Physics)
+
+```csharp
+    void FixedUpdate()
+    {
+        Vector3 movement = new Vector3(movementX, 0.0f, movementY);
+        rb.AddForce(movement * speed);
+    }
+```
+
+# Step 6: All together now
+
+Use WASD or arrow keys to control the ball.
+
+<div class="notes">
+Note the editor controls for speed
+</div>
+
+# Step 7: Walls and prefabs
+
+<div class="cols">
+![](imgs/07-nested.png)
+![](imgs/07-reps.png)
+
+![](imgs/07-prefabs.png)
+
+![](imgs/07-view.png)
+
+</div>
+
+<div class="notes">
+talk about how you can edit all instantiations of a prefab at once
+</div>
+
+# Step 8: Dominoes
+
+<div class="cols">
+
+ - Make a prefab to knock over
+ - Needs a RigidBody component
+ - Put a few in the scene
+
+![](imgs/08-domino.png)
+</div>
+
+# Step 8: Dominoes
+![Press Play, and see if they fall.](imgs/08-field.png)
+
+<div class="notes">
+Remove a rigid body from one of the instances. What happens?
+</div>
+
+# Step 9: More code
+
+Let's change the color when the domino falls.
+
+```csharp
+public class Knockable : MonoBehaviour
+{
+    Material mat;
+    Color _originalColor;
+    Color _newColor;
+
+    void Start()
+    {
+        mat = GetComponent<Renderer>().material;
+        _originalColor = mat.GetColor("_BaseColor");
+        _newColor = new Color(0.2f, 0.95f, 0.1f);
+    }
+    ...
+```
+
+# Step 9: More more code
+
+Every frame, check if the domino has fallen. If so, change color.
+```csharp
+    ...
+    void Update()
+    {
+        if (IsStandingUp())
+        {
+            mat.SetColor("_BaseColor", _originalColor);
+        }
+        else
+        {
+            mat.SetColor("_BaseColor", _newColor);
+        }
+    }
+
+    public bool IsStandingUp()
+    {
+        return !(Vector3.Dot(this.transform.up, Vector3.up) < 0.8f);
+    }
+}
+```
+
+# Step 9: The result
+
+![](imgs/09-result.png)
+
+# Step 10: The endgame
+
+```csharp
+public class Endgame : MonoBehaviour
+{
+    public GameObject floor;
+
+    void Update()
+    {
+        bool done = true;
+        foreach (Transform child in transform)
+        {
+            Knockable domino = child.gameObject.GetComponent<Knockable>();
+            if (domino != null && domino.IsStandingUp())
+            {
+                done = false;
+            }
+        }
+
+        if (done)
+        {
+            floor.transform.localScale = Vector3.zero;
+            Invoke(nameof(Shutdown), 3.0f);
+        }
+    }
+}
+```
+
+<div class="notes">
+Let's have a way to finish the game
+</div>
+
+# Step 10: Shut it down
+
+Note the different ways to handle application exit in the editor vs built application.
+
+```csharp
+    void Shutdown()
+    {
+#if UNITY_EDITOR
+        UnityEditor.EditorApplication.isPlaying = false;
+#endif
+        Application.Quit();
+    }
+```
+
+# Step 11: The finale
+
+![Beautiful.](imgs/11-finale.png)
+
+# Review: Core concepts
+
+| Concept    | Meaning                                    |
+|------------|--------------------------------------------|
+| Scene      | A container of GameObjects                 |
+| GameObject | An entity that does nothing by itself, but extended by Components |
+| Component  | Data and behavior attached to a GameObject |
+| Prefab     | A reusable GameObject template             |
+| Script     | Dynamically control game state             |
+
+# Some things we could cover quickly, given time
+
+ - Build/deploy
+ - Other Editor controls (scaling)
+ - `Debug.Log` and friends
+ - Stats view
+
+# Some of the things we missed, but that may be important
+
+ - Assets (sounds, pictures, external models, packaging, ...)
+ - Version control
+ - URP/HDRP/BiRP (default to URP)
+ - Mono vs IL2CPP (soon to be CoreCLR vs IL2CPP?)
+ - "New Input" vs "Old Input", input mapping
+ - Profiling tools
+ - Camera controls
+ - Animations
+ - Sounds
+ - UIs
+ - Multiple scenes
+ - DOTS/ECS
+ - Really important things
+
+ # Why not use Unity/awkward parts
+
+  - Proprietary-- could disappear at some point (see e.g. Our Machinery)
+  - Big & slow to install/launch
+  - Too many ways to solve a problem/lots of legacy stuff (for now)
+  - Documentation can easily be out of date
+
+</script>
+
+<script src="https://casual-effects.com/markdeep/latest/markdeep.min.js" charset="utf-8"></script>
+<script>
+// Markdeep renders asynchronously and gives no completion event, so poll for its output.
+(function () {
+  let tries = 0;
+  const timer = setInterval(() => {
+    const root = document.querySelector('.md');
+    const slides = root ? root.querySelectorAll('section.h1-section') : [];
+    if (slides.length || ++tries > 200) {
+      clearInterval(timer);
+      if (slides.length) build(root, Array.from(slides));
+    }
+  }, 50);
+
+  function build(root, slides) {
+    slides[0].classList.add('title');
+
+    // Markdeep emits whitespace-only paragraphs that would add stray vertical gaps.
+    root.querySelectorAll('p').forEach(p => {
+      if (!p.textContent.trim() && !p.children.length) p.remove();
+    });
+
+    // Markdeep sizes diagrams with fixed width/height; a viewBox lets CSS scale them.
+    root.querySelectorAll('svg.diagram').forEach(svg => {
+      const w = svg.getAttribute('width'), h = svg.getAttribute('height');
+      if (w && h && !svg.hasAttribute('viewBox')) {
+        svg.setAttribute('viewBox', `0 0 ${w} ${h}`);
+        svg.removeAttribute('width');
+        svg.removeAttribute('height');
+      }
+    });
+
+    // Markdeep links each image to its file; a click should advance the slide, not open a tab.
+    root.querySelectorAll('a > img.markdeep').forEach(img => img.parentNode.replaceWith(img));
+
+    const count = document.createElement('div');
+    count.className = 'slide-count';
+    root.appendChild(count);
+
+    function fit() {
+      const s = Math.min(innerWidth / 1280, innerHeight / 720);
+      document.documentElement.style.setProperty('--scale', s);
+    }
+    addEventListener('resize', fit);
+    fit();
+
+    const titleOf = s => s.querySelector('h1').textContent;
+    const deckTitle = titleOf(slides[0]);
+
+    let i = 0;
+    function show(n) {
+      i = Math.min(Math.max(n, 0), slides.length - 1);
+      slides.forEach((s, k) => s.classList.toggle('active', k === i));
+      count.textContent = (i + 1) + ' / ' + slides.length;
+      history.replaceState(null, '', '#' + (i + 1));
+      syncPresenter();
+    }
+
+    // Presenter window. A blank popup inherits this page's origin, so this page can write
+    // into it directly. That works from file://, where messaging between pages often fails.
+    let pw = null, start = 0, clockTimer = 0;
+    const presenterHtml = `<!doctype html><meta charset="utf-8"><title>Presenter: ${deckTitle}</title>
+<style>
+body { font: 24px/1.45 system-ui, "Segoe UI", Helvetica, Arial, sans-serif; color: #1a1a1a; margin: 0; padding: 20px 32px; }
+header { display: flex; justify-content: space-between; gap: 24px; font-size: 18px; color: #666;
+         border-bottom: 2px solid #9000e0; padding-bottom: 8px; margin-bottom: 16px; }
+#cur { color: #9000e0; font-weight: 700; }
+#clock { font-variant-numeric: tabular-nums; cursor: pointer; }
+#next { font-size: 18px; color: #666; margin-bottom: 20px; }
+strong, b, a { color: #9000e0; }
+code { font-family: Consolas, Menlo, monospace; background: #f5f5f5; padding: 0 .25em; }
+</style>
+<header><span><span id="pos"></span> <span id="cur"></span></span><span id="clock" title="Click to reset"></span></header>
+<div id="next"></div><div id="notes"></div>`;
+
+    function tick() {
+      const sec = Math.floor((Date.now() - start) / 1000);
+      pw.document.getElementById('clock').textContent =
+        Math.floor(sec / 60) + ':' + String(sec % 60).padStart(2, '0');
+    }
+
+    function openPresenter() {
+      if (!pw || pw.closed) {
+        pw = open('', 'presenter', 'width=900,height=650');
+        if (!pw) return;  // Popup blocked.
+        // document.open replaces any stale content and listeners left from a previous page load.
+        pw.document.open();
+        pw.document.write(presenterHtml);
+        pw.document.close();
+        pw.document.addEventListener('keydown', onKey);
+        pw.document.getElementById('clock').addEventListener('click', () => { start = Date.now(); tick(); });
+        start = Date.now();
+        clearInterval(clockTimer);
+        clockTimer = setInterval(() => pw.closed ? clearInterval(clockTimer) : tick(), 1000);
+        tick();
+      }
+      pw.focus();
+      syncPresenter();
+    }
+
+    function syncPresenter() {
+      if (!pw || pw.closed) return;
+      const d = pw.document, notes = slides[i].querySelector('.notes');
+      d.getElementById('pos').textContent = (i + 1) + ' / ' + slides.length;
+      d.getElementById('cur').textContent = titleOf(slides[i]);
+      d.getElementById('next').textContent = 'Next: ' + (slides[i + 1] ? titleOf(slides[i + 1]) : 'end');
+      d.getElementById('notes').innerHTML = notes ? notes.innerHTML : '<em>No notes.</em>';
+    }
+
+    function onKey(e) {
+      if (['ArrowRight', 'ArrowDown', 'PageDown', ' '].includes(e.key)) show(i + 1);
+      else if (['ArrowLeft', 'ArrowUp', 'PageUp'].includes(e.key)) show(i - 1);
+      else if (e.key === 'Home') show(0);
+      else if (e.key === 'End') show(slides.length - 1);
+      else if (e.key === 'p' || e.key === 'P') openPresenter();
+      else return;
+      e.preventDefault();
+    }
+
+    show((parseInt(location.hash.slice(1), 10) || 1) - 1);
+    document.addEventListener('keydown', onKey);
+    document.addEventListener('click', e => { if (!e.target.closest('a')) show(i + 1); });  }
+})();
+</script>
